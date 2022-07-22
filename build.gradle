@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        kotlin_version = "1.6.0"
+        java_version = "1.8"
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version" apply false
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    group 'com.shinonometn'
+    version '1.0-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+
+    sourceCompatibility = java_version
+    targetCompatibility = java_version
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+        // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+        // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+
+        implementation 'com.github.jnr:jnr-unixsocket:0.38.17'
+
+        // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+        testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    }
+
+    compileKotlin { kotlinOptions.jvmTarget = java_version }
+    compileTestKotlin { kotlinOptions.jvmTarget = java_version }
+
+    test {
+        useJUnitPlatform()
+    }
+}

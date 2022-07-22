@@ -1,0 +1,6 @@
+rootProject.name = 'jam-networkd'
+
+include "jam-networkd-base"
+include 'jam-networkd-ip-json'
+include "jam-networkd-main"
+
