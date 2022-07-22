@@ -3,13 +3,13 @@ package com.shinonometn.jam.networkd.ipjson
 import com.shinonometn.jam.networkd.base.BaseService
 import com.shinonometn.jam.networkd.base.NetworkInterface
 import com.shinonometn.jam.networkd.base.NetworkInterfaceProvider
-import com.shinonometn.jam.networkd.base.utils.process
+import com.shinonometn.jam.networkd.base.utils.shell
 import org.apache.commons.lang3.SystemUtils
 
 class IpJsonCommandService : NetworkInterfaceProvider {
 
     override fun listInterfaces(callback: (Result<List<NetworkInterface>>) -> Unit) {
-        process(*ip("link")).execute {
+        shell(*ip("link")).execute {
             if(it.isFailure) callback(Result.failure(it.exceptionOrNull()!!))
             else callback(Result.success(it.getOrThrow().outputAsJson().map(IpCommandInterface::fromJson)))
         }
@@ -21,7 +21,7 @@ class IpJsonCommandService : NetworkInterfaceProvider {
 
     override fun isSupported(): BaseService.CompatibilityReport {
         if(!SystemUtils.IS_OS_LINUX) return BaseService.CompatibilityReport.notSupported("Require System: Linux")
-        val executeResult = process("command", "-v", "ip").execute().get()
+        val executeResult = shell("command", "-v", "ip").execute().get()
         if(executeResult.exitCode != 0) return BaseService.CompatibilityReport.notSupported("Require command: ip")
         return BaseService.CompatibilityReport.supported()
     }
